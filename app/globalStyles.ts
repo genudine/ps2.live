@@ -8,4 +8,5 @@ export const Body = styled("body", {
   color: "#fff",
   lineHeight: 1.6,
   fontFamily: "Inter, system-ui, sans-serif",
+  margin: 0,
 });

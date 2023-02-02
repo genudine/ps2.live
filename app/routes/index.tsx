@@ -4,6 +4,7 @@ import type { IndexResponse, World } from "~/utils/saerro";
 import { indexQuery } from "~/utils/saerro";
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/cloudflare";
+import { FactionBar } from "~/components/FactionBar";
 
 export const loader = async () => {
   return json(await indexQuery());
@@ -26,10 +27,15 @@ const WorldCard = ({ world }: { world: World }) => {
     <CardBase>
       <CardHeader to={`/worlds/${world.id}`}>
         <div>{world.name}</div>
-        <div>
-          <HiChevronRight />
-        </div>
+        <HiChevronRight />
       </CardHeader>
+
+      <div>
+        <div>Population: {world.population.total.toLocaleString()}</div>
+        <div>
+          <FactionBar {...world.population} />
+        </div>
+      </div>
     </CardBase>
   );
 };

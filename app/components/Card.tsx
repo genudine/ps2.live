@@ -8,6 +8,7 @@ export const CardBase = styled("div", {
   backgroundColor: "#000",
   border: "2px solid #fff",
   borderRadius: "0.5rem",
+  margin: "1rem",
 });
 
 export const CardHeader = styled(Link, {
@@ -17,4 +18,12 @@ export const CardHeader = styled(Link, {
   justifyContent: "space-between",
   backgroundColor: "#ccc",
   borderRadius: "0.5rem",
+  fontSize: "1.25rem",
+  color: "#000",
+  textDecoration: "none",
+  padding: "0.5rem",
+  cursor: "pointer",
+  ":hover": {
+    backgroundColor: "#fff",
+  },
 });
