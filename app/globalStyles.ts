@@ -8,5 +8,4 @@ export const Body = styled("body", {
   color: "#fff",
   lineHeight: 1.6,
   fontFamily: "'IBM Plex Mono', monospace",
-  margin: 0,
 });

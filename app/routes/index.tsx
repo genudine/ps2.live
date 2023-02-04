@@ -14,14 +14,16 @@ export const loader = async () => {
 };
 
 export default function Index() {
-  // const { allWorlds } = useLoaderData<typeof loader>();
+  const { allWorlds } = useLoaderData<typeof loader>();
 
   return (
     <div>
       <Header />
-      {/* {allWorlds.map((world) => (
-        <WorldCard key={world.id} world={world} />
-      ))} */}
+      <div>
+        {allWorlds.map((world) => (
+          <WorldCard world={world} key={world.id} />
+        ))}
+      </div>
     </div>
   );
 }

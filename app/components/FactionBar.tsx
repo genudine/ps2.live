@@ -44,7 +44,7 @@ export const FactionBar = ({
       <Bar size={nc} color="#22f" title="New Conglomerate">
         {nc.toLocaleString()}
       </Bar>
-      <Bar size={tr} color="#f11" borders title="Terran Republic">
+      <Bar size={tr} color="#f11" title="Terran Republic">
         {tr.toLocaleString()}
       </Bar>
       <Bar size={vs} color="#a0d" title="Vanu Sovreignty">
