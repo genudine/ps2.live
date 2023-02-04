@@ -7,6 +7,6 @@ export const Body = styled("body", {
   backgroundAttachment: "fixed",
   color: "#fff",
   lineHeight: 1.6,
-  fontFamily: "Inter, system-ui, sans-serif",
+  fontFamily: "'IBM Plex Mono', monospace",
   margin: 0,
 });
