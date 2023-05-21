@@ -21,6 +21,10 @@ export type Zone = {
   id: string;
   name: string;
   population: Population;
+  vehicles?: Record<(typeof allVehicles)[number], Population> & {
+    total: number;
+  };
+  classes?: Record<(typeof allClasses)[number], Population>;
 };
 
 export type World = {
@@ -87,4 +91,80 @@ export const indexQuery = async (): Promise<IndexResponse> => {
   indexData.allWorlds.sort((a, b) => a.id - b.id);
 
   return indexData;
+};
+
+export type WorldResponse = {
+  world: World;
+};
+
+export const allVehicles = [
+  "flash",
+  "sunderer",
+  "lightning",
+  "scythe",
+  "vanguard",
+  "prowler",
+  "reaver",
+  "mosquito",
+  "galaxy",
+  "valkyrie",
+  "liberator",
+  "ant",
+  "harasser",
+  "dervish",
+  "chimera",
+  "javelin",
+  "corsair",
+  "magrider",
+];
+
+export const allClasses = [
+  "infiltrator",
+  "lightAssault",
+  "combatMedic",
+  "engineer",
+  "heavyAssault",
+  "max",
+];
+
+export const worldQuery = async (worldID: string): Promise<WorldResponse> => {
+  const query = `query {
+    world(by: {id: ${Number(worldID)}}) {
+      id
+      name
+      population {
+        total
+        nc
+        tr
+        vs
+      }
+      zones {
+        all {
+          id
+          name
+          classes {
+            ${allClasses.map((cls) => `${cls} { total nc tr vs }`).join(" ")}
+          }
+          vehicles {
+            total
+            ${allVehicles
+              .map((vehicle) => `${vehicle} { total nc tr vs }`)
+              .join(" ")}
+          }
+          population {
+            total
+            nc
+            tr
+            vs
+          }
+        }
+      }
+    }
+  }`;
+
+  console.log(query);
+
+  const worldData: WorldResponse = await saerroFetch(query);
+
+  return worldData;
 };
