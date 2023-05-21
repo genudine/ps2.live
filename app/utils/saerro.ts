@@ -91,6 +91,8 @@ export const indexQuery = async (): Promise<IndexResponse> => {
 
   indexData.allWorlds.sort((a, b) => a.id - b.id);
 
+  console.log(indexData);
+
   return indexData;
 };
 
