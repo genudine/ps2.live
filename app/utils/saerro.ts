@@ -1,11 +1,12 @@
 export const saerroFetch = async <T>(query: string): Promise<T> => {
-  const response = await fetch("https://saerro.ps2.live/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ query }),
-  });
+  const response = await fetch(
+    `https://saerro.ps2.live/graphql?query=${query}`,
+    {
+      cf: {
+        cacheTtl: 60,
+      },
+    }
+  );
   const json: { data: T } = await response.json();
   return json.data;
 };
@@ -52,7 +53,7 @@ export type IndexResponse = {
 };
 
 export const indexQuery = async (): Promise<IndexResponse> => {
-  const query = `query {
+  const query = `{
     health {
       ingestReachable
       ingest
@@ -128,7 +129,7 @@ export const allClasses = [
 ];
 
 export const worldQuery = async (worldID: string): Promise<WorldResponse> => {
-  const query = `query {
+  const query = `{
     world(by: {id: ${Number(worldID)}}) {
       id
       name
@@ -161,8 +162,6 @@ export const worldQuery = async (worldID: string): Promise<WorldResponse> => {
       }
     }
   }`;
-
-  console.log(query);
 
   const worldData: WorldResponse = await saerroFetch(query);
 

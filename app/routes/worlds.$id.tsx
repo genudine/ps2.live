@@ -1,4 +1,4 @@
-import type { LoaderArgs } from "@remix-run/cloudflare";
+import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import {
@@ -14,7 +14,11 @@ export const loader = async ({ params }: LoaderArgs) => {
   return json(await worldQuery(params.id as string));
 };
 
-export default function Index() {
+export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
+  return [{ title: `${data.world.name} | PS2.LIVE` }];
+};
+
+export default function World() {
   const { world } = useLoaderData<WorldResponse>();
 
   return (
