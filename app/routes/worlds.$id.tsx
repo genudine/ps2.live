@@ -10,11 +10,39 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
+  const date = new Date();
+  const id = data?.world.id;
+  const timeZone =
+    id === 1
+      ? "America/Los_Angeles"
+      : id === 17 || id === 19 || id === 1000
+      ? "America/New_York"
+      : id === 40
+      ? "Asia/Tokyo"
+      : "UTC";
+  const datetimeHumanFriendly = date.toLocaleString("en-GB", {
+    timeZone,
+    hour12: true,
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
   return [
     { title: `${data?.world.name || "Unknown world"} | PS2.LIVE` },
     {
       name: "description",
-      content: `${data?.world.name} currently has ${data?.world.population.total} players online right now. VS: ${data?.world.population.vs}, NC: ${data?.world.population.nc}, TR: ${data?.world.population.tr} -- See more detailed stats on ps2.live.`,
+      content: `${data?.world.name} currently has ${
+        data?.world.population.total
+      } players online as of ${datetimeHumanFriendly} local server time (<t:${Math.round(
+        date.getTime() / 1000
+      )}:R>). VS: ${data?.world.population.vs}, NC: ${
+        data?.world.population.nc
+      }, TR: ${
+        data?.world.population.tr
+      } -- See more detailed stats on ps2.live.`,
+    },
+    {
+      name: "timestamp",
+      content: date.toISOString(),
     },
   ];
 };
