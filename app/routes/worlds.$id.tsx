@@ -1,13 +1,8 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
-import {
-  WorldResponse,
-  Zone,
-  allClasses,
-  allVehicles,
-  worldQuery,
-} from "~/utils/saerro";
+import type { WorldResponse, Zone } from "~/utils/saerro";
+import { allClasses, allVehicles, worldQuery } from "~/utils/saerro";
 import { pascalCaseToTitleCase, toTitleCase } from "~/utils/strings";
 
 export const loader = async ({ params }: LoaderArgs) => {
@@ -15,7 +10,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
-  return [{ title: `${data.world.name} | PS2.LIVE` }];
+  return [{ title: `${data?.world.name || "Unknown world"} | PS2.LIVE` }];
 };
 
 export default function World() {
