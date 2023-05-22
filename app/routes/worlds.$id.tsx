@@ -13,7 +13,8 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
   return [
     { title: `${data?.world.name || "Unknown world"} | PS2.LIVE` },
     {
-      description: `${data?.world.name} currently has ${data?.world.population.total} players online right now. VS: ${data?.world.population.vs}, NC: ${data?.world.population.nc}, TR: ${data?.world.population.tr} -- See more detailed stats on ps2.live.`,
+      name: "description",
+      content: `${data?.world.name} currently has ${data?.world.population.total} players online right now. VS: ${data?.world.population.vs}, NC: ${data?.world.population.nc}, TR: ${data?.world.population.tr} -- See more detailed stats on ps2.live.`,
     },
   ];
 };
