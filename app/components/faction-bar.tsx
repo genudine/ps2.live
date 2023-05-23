@@ -11,9 +11,9 @@ export const FactionBar = ({
   const { vsPercent, ncPercent, trPercent } = useMemo(() => {
     const total = totalPopulation({ vs, nc, tr, total: 0 });
     return {
-      vsPercent: Math.floor((vs / total) * 100) || 0,
-      ncPercent: Math.floor((nc / total) * 100) || 0,
-      trPercent: Math.floor((tr / total) * 100) || 0,
+      vsPercent: Math.round((vs / total) * 100) || 0,
+      ncPercent: Math.round((nc / total) * 100) || 0,
+      trPercent: Math.round((tr / total) * 100) || 0,
     };
   }, [vs, nc, tr]);
   return (
