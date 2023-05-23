@@ -8,7 +8,7 @@ export const bar = style({
   flexDirection: "row",
   overflow: "hidden",
   borderRadius: "0.4rem",
-  border: "2px solid #2d2d2d",
+  border: "2px solid #4d4d4d",
 });
 
 export const tinyBar = style({
@@ -22,6 +22,7 @@ export const tinyBar = style({
 
 const shared: ComplexStyleRule = {
   textAlign: "center",
+  boxShadow: "inset 0 0 0.5rem rgb(0 0 0 / 10%)",
 };
 
 export const left = style({
@@ -31,7 +32,9 @@ export const left = style({
 export const center = style({
   ...shared,
   backgroundColor: "#1564cc",
-  borderBottom: "1px solid #2d2d2d",
+  borderLeft: "1px solid #4d4d4d",
+  borderRight: "2px solid #4d4d4d",
+  boxShadow: "inset 0 0 0.5rem rgb(180 180 180 / 10%)",
 });
 export const right = style({
   ...shared,
