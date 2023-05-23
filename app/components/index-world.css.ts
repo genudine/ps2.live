@@ -4,6 +4,17 @@ export const container = style({
   background: "#333",
   flexBasis: "30%",
   margin: "0.5rem",
+
+  "@media": {
+    // under 600px
+    "screen and (max-width: 600px)": {
+      flexBasis: "100%",
+    },
+    // between 600px and 1000px
+    "screen and (min-width: 600px) and (max-width: 1000px)": {
+      flexBasis: "45%",
+    },
+  },
 });
 
 export const header = style({
