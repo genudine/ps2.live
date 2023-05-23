@@ -1,4 +1,5 @@
 {
+  "name": "ps2.live",
   "private": true,
   "sideEffects": false,
   "scripts": {

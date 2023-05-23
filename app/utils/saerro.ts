@@ -44,6 +44,7 @@ export type Health = {
   worlds: {
     name: string;
     status: string;
+    lastEvent: string;
   }[];
 };
 
@@ -55,19 +56,16 @@ export type IndexResponse = {
 export const indexQuery = async (): Promise<IndexResponse> => {
   const query = `{
     health {
-      ingestReachable
-      ingest
-      database
       worlds {
         name
         status
+        lastEvent
       }
     }
     allWorlds {
       id
       name
       population {
-        total
         nc
         tr
         vs
@@ -77,7 +75,6 @@ export const indexQuery = async (): Promise<IndexResponse> => {
           id
           name
           population {
-            total
             nc
             tr
             vs
@@ -90,8 +87,6 @@ export const indexQuery = async (): Promise<IndexResponse> => {
   const indexData: IndexResponse = await saerroFetch(query);
 
   indexData.allWorlds.sort((a, b) => a.id - b.id);
-
-  console.log(indexData);
 
   return indexData;
 };
@@ -169,3 +164,6 @@ export const worldQuery = async (worldID: string): Promise<WorldResponse> => {
 
   return worldData;
 };
+
+export const totalPopulation = ({ nc, vs, tr }: Population): number =>
+  nc + vs + tr;
