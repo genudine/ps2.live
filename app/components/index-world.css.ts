@@ -144,3 +144,21 @@ export const alertCont = style({
   border: "2px solid #ff2d2d",
   animation: `${alertFade} 1s ease-in-out 4 alternate`,
 });
+
+export const nextCont = style({
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  padding: "0.5rem",
+  justifyContent: "center",
+  backgroundColor: "#222",
+  borderRadius: "0.4rem",
+  margin: "0.5rem",
+  color: "#aaa",
+});
+
+export const nextContText = style({
+  fontWeight: "bold",
+  textTransform: "uppercase",
+  marginRight: "0.5rem",
+});

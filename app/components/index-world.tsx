@@ -22,6 +22,12 @@ export type IndexWorldProps = {
 export const IndexWorld = ({ metagame, population }: IndexWorldProps) => {
   const worldId = metagame.id;
   const { platform, location, name } = worlds[String(worldId || "default")];
+  const nextZone = metagame.zones.sort(
+    (a, b) =>
+      new Date(a.locked_since ?? Date.now()).getTime() -
+      new Date(b.locked_since ?? Date.now()).getTime()
+  )[0];
+  const nextZoneStrings = zones[nextZone.id];
 
   return (
     <div className={styles.container}>
@@ -121,6 +127,23 @@ export const IndexWorld = ({ metagame, population }: IndexWorldProps) => {
               </div>
             );
           })}
+        {worldId !== 19 && (
+          <div className={styles.nextCont}>
+            <div className={styles.nextContText}>Next continent &raquo;</div>{" "}
+            <div className={styles.contName}>
+              <div
+                className={styles.contCircle}
+                style={
+                  {
+                    "--upper-color": nextZoneStrings.colors[0],
+                    "--lower-color": nextZoneStrings.colors[1],
+                  } as any
+                }
+              ></div>
+              <div>{nextZoneStrings.name}</div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

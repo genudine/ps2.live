@@ -21,6 +21,7 @@ export type MetagameWorld = {
       tr: number;
       vs: number;
     };
+    locked_since?: string;
   }[];
 };
 
