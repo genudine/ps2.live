@@ -13,7 +13,7 @@ export const loader = async () => {
     fetchPopulationWorlds(),
   ]);
 
-  return json({ metagame, population });
+  return json({ metagame: metagame.sort((a, b) => a.id - b.id), population });
 };
 
 export const meta: V2_MetaFunction = () => {
