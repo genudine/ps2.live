@@ -1,21 +1,23 @@
-import { useMemo } from "react";
-import type { Health, World } from "~/utils/saerro";
 import { IndexWorld } from "./index-world";
 import * as styles from "./index-world-container.css";
+import type { MetagameWorld } from "~/utils/metagame";
+import type { PopulationWorld } from "~/utils/population";
 
 export const WorldContainer = ({
-  worlds,
-  health,
+  metagame,
+  population,
 }: {
-  worlds: World[];
-  health: Health;
+  metagame: MetagameWorld[];
+  population: PopulationWorld[];
 }) => (
   <div className={styles.container}>
-    {worlds.map((world) => (
+    {metagame.map((world) => (
       <IndexWorld
         key={world.id}
-        world={world}
-        health={health.worlds.find((w) => world.name.toLowerCase() === w.name)}
+        metagame={world}
+        population={
+          population.find((p) => p.id === world.id) as PopulationWorld
+        }
       />
     ))}
   </div>

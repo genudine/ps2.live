@@ -12,7 +12,7 @@ export const saerroFetch = async <T>(query: string): Promise<T> => {
 };
 
 export type Population = {
-  total: number;
+  total?: number;
   nc: number;
   tr: number;
   vs: number;
@@ -22,10 +22,10 @@ export type Zone = {
   id: string;
   name: string;
   population: Population;
-  vehicles?: Record<(typeof allVehicles)[number], Population> & {
+  vehicles?: Record<typeof allVehicles[number], Population> & {
     total: number;
   };
-  classes?: Record<(typeof allClasses)[number], Population>;
+  classes?: Record<typeof allClasses[number], Population>;
 };
 
 export type World = {

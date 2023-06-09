@@ -2,10 +2,18 @@ import { json, type V2_MetaFunction } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import { IndexWorld } from "~/components/index-world";
 import { WorldContainer } from "~/components/index-world-container";
+import { outer } from "~/components/index.css";
+import { fetchMetagameWorlds } from "~/utils/metagame";
+import { fetchPopulationWorlds } from "~/utils/population";
 import { indexQuery } from "~/utils/saerro";
 
 export const loader = async () => {
-  return json(await indexQuery());
+  const [metagame, population] = await Promise.all([
+    fetchMetagameWorlds(),
+    fetchPopulationWorlds(),
+  ]);
+
+  return json({ metagame, population });
 };
 
 export const meta: V2_MetaFunction = () => {
@@ -21,10 +29,8 @@ export const meta: V2_MetaFunction = () => {
 export default function Index() {
   const data = useLoaderData<typeof loader>();
   return (
-    <div>
-      <h1>PS2.LIVE</h1>
-      <h2>Worlds</h2>
-      <WorldContainer worlds={data.allWorlds} health={data.health} />
+    <div className={outer}>
+      <WorldContainer metagame={data.metagame} population={data.population} />
     </div>
   );
 }

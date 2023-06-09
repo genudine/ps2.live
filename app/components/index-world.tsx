@@ -1,60 +1,126 @@
 import { Link } from "@remix-run/react";
-import { Health, totalPopulation, World } from "~/utils/saerro";
-import { humanTimeAgo } from "~/utils/strings";
-import { worlds } from "~/utils/worlds";
+import {
+  humanTimeAgo,
+  snakeCaseToTitleCase,
+  worlds,
+  zones,
+} from "~/utils/strings";
 import * as styles from "./index-world.css";
 import vsLogo from "~/images/vs-100.png";
 import ncLogo from "~/images/nc-100.png";
 import trLogo from "~/images/tr-100.png";
 import { FactionBar } from "./faction-bar";
+import type { MetagameWorld } from "~/utils/metagame";
+import type { PopulationWorld } from "~/utils/population";
+import { c } from "~/utils/classes";
 
 export type IndexWorldProps = {
-  world: World;
-  health?: Health["worlds"][number];
+  metagame: MetagameWorld;
+  population: PopulationWorld;
 };
 
-export const IndexWorld = ({ world, health }: IndexWorldProps) => {
-  const { platform, location } = worlds[String(world.id || "default")];
-
-  const timeSinceLastEvent = humanTimeAgo(
-    new Date().getTime() - new Date(health?.lastEvent || 0).getTime()
-  );
+export const IndexWorld = ({ metagame, population }: IndexWorldProps) => {
+  const worldId = metagame.id;
+  const { platform, location, name } = worlds[String(worldId || "default")];
 
   return (
     <div className={styles.container}>
-      <Link to={`/worlds/${world.id}`} className={styles.header}>
-        <div className={styles.headerName}>{world.name}</div>
+      <Link to={`/worlds/${worldId}`} className={styles.header}>
+        <div className={styles.headerName}>{name}</div>
         <div className={styles.headerMarkers}>
           [{location}] [{platform}]{" "}
-          <div
-            className={styles.circle}
-            style={{
-              backgroundColor: health?.status === "UP" ? "limegreen" : "red",
-            }}
-            title={`Status: ${health?.status} || Last event: ${timeSinceLastEvent}`}
-          ></div>
         </div>
         <div className={styles.headerDetailsLink}>DETAILS ⇨</div>
       </Link>
       <div className={styles.details}>
         <div className={styles.population}>
           <div className={styles.totalPop}>
-            {totalPopulation(world.population)}
+            {population.factions.vs +
+              population.factions.nc +
+              population.factions.tr}
           </div>
           <div className={styles.popFaction}>
             <img className={styles.popImage} src={vsLogo} alt="VS" />{" "}
-            {world.population.vs}
+            {population.factions.vs}
           </div>
           <div className={styles.popFaction}>
             <img className={styles.popImage} src={ncLogo} alt="NC" />{" "}
-            {world.population.nc}
+            {population.factions.nc}
           </div>
           <div className={styles.popFaction}>
             <img className={styles.popImage} src={trLogo} alt="TR" />{" "}
-            {world.population.tr}
+            {population.factions.tr}
           </div>
         </div>
-        <FactionBar population={world.population} />
+        <FactionBar population={population.factions} />
+      </div>
+      <div className={c(worldId === 19 && styles.jaegerConts)}>
+        {metagame.zones
+          .filter((zone) => !zone.locked)
+          .sort((a, b) => {
+            return a.alert && !b.alert ? -1 : b.alert && !a.alert ? 1 : 0;
+          })
+          .map((zone) => {
+            let {
+              name,
+              colors: [upper, lower],
+            } = zones[zone.id];
+            return worldId !== 19 ? (
+              <div
+                key={zone.id}
+                className={c(styles.continent, zone.alert && styles.alertCont)}
+              >
+                <div className={styles.contName}>
+                  <div
+                    className={styles.contCircle}
+                    style={
+                      {
+                        "--upper-color": upper,
+                        "--lower-color": lower,
+                      } as any
+                    }
+                  ></div>
+                  <div>{name}</div>
+                </div>
+                <div className={styles.contBars}>
+                  <div>
+                    <div className={styles.contBarTitle}>TERRITORY CONTROL</div>
+                    <FactionBar population={zone.territory} />
+                  </div>
+                  {zone.alert && (
+                    <div>
+                      <div className={styles.contBarTitle}>
+                        {snakeCaseToTitleCase(
+                          zone.alert.alert_type
+                        ).toUpperCase()}{" "}
+                        ALERT PROGRESS | STARTED{" "}
+                        {humanTimeAgo(
+                          Date.now() -
+                            new Date(zone.alert.start_time).getTime(),
+                          true
+                        ).toUpperCase()}{" "}
+                        AGO
+                      </div>
+                      <FactionBar population={zone.alert.percentages} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div key={zone.id} className={styles.contName}>
+                <div
+                  className={styles.contCircle}
+                  style={
+                    {
+                      "--upper-color": upper,
+                      "--lower-color": lower,
+                    } as any
+                  }
+                ></div>
+                <div>{name}</div>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

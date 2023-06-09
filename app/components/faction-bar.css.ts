@@ -11,6 +11,15 @@ export const bar = style({
   border: "2px solid #2d2d2d",
 });
 
+export const tinyBar = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexDirection: "row",
+  overflow: "hidden",
+  fontSize: 5,
+});
+
 const shared: ComplexStyleRule = {
   textAlign: "center",
 };

@@ -4,8 +4,7 @@ import { useLoaderData } from "@remix-run/react";
 import type { Zone } from "~/utils/saerro";
 import { totalPopulation } from "~/utils/saerro";
 import { allClasses, allVehicles, worldQuery } from "~/utils/saerro";
-import { pascalCaseToTitleCase, toTitleCase } from "~/utils/strings";
-import { worlds } from "~/utils/worlds";
+import { pascalCaseToTitleCase, toTitleCase, worlds } from "~/utils/strings";
 
 export const loader = async ({ params }: LoaderArgs) => {
   return json(await worldQuery(params.id as string));
