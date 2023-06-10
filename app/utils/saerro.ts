@@ -37,60 +37,6 @@ export type World = {
   };
 };
 
-export type Health = {
-  ingestReachable: string;
-  ingest: string;
-  database: string;
-  worlds: {
-    name: string;
-    status: string;
-    lastEvent: string;
-  }[];
-};
-
-export type IndexResponse = {
-  health: Health;
-  allWorlds: World[];
-};
-
-export const indexQuery = async (): Promise<IndexResponse> => {
-  const query = `{
-    health {
-      worlds {
-        name
-        status
-        lastEvent
-      }
-    }
-    allWorlds {
-      id
-      name
-      population {
-        nc
-        tr
-        vs
-      }
-      zones {
-        all {
-          id
-          name
-          population {
-            nc
-            tr
-            vs
-          }
-        }
-      }
-    }
-  }`;
-
-  const indexData: IndexResponse = await saerroFetch(query);
-
-  indexData.allWorlds.sort((a, b) => a.id - b.id);
-
-  return indexData;
-};
-
 export type WorldResponse = {
   world: World;
 };
@@ -129,9 +75,7 @@ export const worldQuery = async (worldID: string): Promise<WorldResponse> => {
   const query = `{
     world(by: {id: ${Number(worldID)}}) {
       id
-      name
       population {
-        total
         nc
         tr
         vs
@@ -139,7 +83,6 @@ export const worldQuery = async (worldID: string): Promise<WorldResponse> => {
       zones {
         all {
           id
-          name
           classes {
             ${allClasses.map((cls) => `${cls} { total nc tr vs }`).join(" ")}
           }
@@ -150,7 +93,6 @@ export const worldQuery = async (worldID: string): Promise<WorldResponse> => {
               .join(" ")}
           }
           population {
-            total
             nc
             tr
             vs

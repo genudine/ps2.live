@@ -19,11 +19,11 @@ export const humanTimeAgo = (ms: number, full?: boolean) => {
   const hours = Math.floor(minutes / 60);
 
   if (hours > 0) {
-    return full ? `${hours}h ${minutes % 60}m` : `${hours}h`;
+    return full ? `${hours}h ${minutes % 60}m ${seconds % 60}s` : `${hours}h`;
   }
 
   if (minutes > 0) {
-    return `${minutes}m`;
+    return full ? `${minutes}m ${seconds % 60}s` : `${minutes}m`;
   }
 
   if (seconds > 0) {

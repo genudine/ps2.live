@@ -30,3 +30,11 @@ export const fetchMetagameWorlds = async (): Promise<MetagameWorld[]> => {
   const data: MetagameWorld[] = await response.json();
   return data;
 };
+
+export const fetchSingleMetagameWorld = async (
+  id: string | number
+): Promise<MetagameWorld> => {
+  const response = await fetch(`https://metagame.ps2.live/${id}`);
+  const data: MetagameWorld = await response.json();
+  return data;
+};

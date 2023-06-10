@@ -1,18 +1,39 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
-import type { Zone } from "~/utils/saerro";
-import { totalPopulation } from "~/utils/saerro";
-import { allClasses, allVehicles, worldQuery } from "~/utils/saerro";
-import { pascalCaseToTitleCase, toTitleCase, worlds } from "~/utils/strings";
+import type { MetagameWorld } from "~/utils/metagame";
+import { fetchSingleMetagameWorld } from "~/utils/metagame";
+import type { WorldResponse, Zone } from "~/utils/saerro";
+import {
+  allClasses,
+  allVehicles,
+  totalPopulation,
+  worldQuery,
+} from "~/utils/saerro";
+import {
+  pascalCaseToTitleCase,
+  toTitleCase,
+  worlds,
+  zones,
+} from "~/utils/strings";
 
-export const loader = async ({ params }: LoaderArgs) => {
-  return json(await worldQuery(params.id as string));
+type LoaderData = {
+  saerro: WorldResponse;
+  metagame: MetagameWorld;
+  id: string;
 };
 
+export async function loader({ params }: LoaderArgs) {
+  const [saerro, metagame] = await Promise.all([
+    worldQuery(params.id as string),
+    fetchSingleMetagameWorld(params.id as string),
+  ]);
+  return json({ saerro, metagame, id: params.id } as LoaderData);
+}
+
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
+  const { saerro, id } = data as LoaderData;
   const date = new Date();
-  const id = data?.world.id;
   const worldInfo = worlds[String(id || "default")];
   const datetimeHumanFriendly = date.toLocaleString(worldInfo.locale, {
     timeZone: worldInfo.timeZone,
@@ -22,22 +43,35 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
   return [
     {
       title: `${
-        data?.world.name || "Unknown world"
+        worldInfo.name || "Unknown world"
       } | PlanetSide 2 Live Population Stats`,
     },
     {
       name: "description",
-      content: `${data?.world.name} currently has ${data?.world.population.total} players online as of ${datetimeHumanFriendly} ${data?.world.name} time. VS: ${data?.world.population.vs}, NC: ${data?.world.population.nc}, TR: ${data?.world.population.tr} -- See more detailed stats on ps2.live.`,
+      content: `${worldInfo.name} currently has ${totalPopulation(
+        saerro.world.population
+      )} players online as of ${datetimeHumanFriendly} ${
+        worldInfo.name
+      } time. VS: ${saerro.world.population.vs}, NC: ${
+        saerro.world.population.nc
+      }, TR: ${
+        saerro.world.population.tr
+      } -- See more detailed stats on ps2.live.`,
     },
   ];
 };
 
 export default function World() {
-  const { world } = useLoaderData<typeof loader>();
+  const {
+    saerro: { world },
+    id,
+  } = useLoaderData<typeof loader>();
+
+  const worldInfo = worlds[String(id || "default")];
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.6" }}>
-      <h1>{world.name}</h1>
+      <h1>{worldInfo.name}</h1>
       <h2>Total Population</h2>
       <p>
         {totalPopulation(world.population)} players ({world.population.vs} VS,{" "}
@@ -54,9 +88,10 @@ export default function World() {
 }
 
 const ZoneInfo = ({ zone }: { zone: Zone }) => {
+  const zoneInfo = zones[String(zone.id)];
   return (
     <section>
-      <h3>{zone.name}</h3>
+      <h3>{zoneInfo.name}</h3>
       <p>
         {totalPopulation(zone.population)} players ({zone.population.vs} VS,{" "}
         {zone.population.nc} NC, {zone.population.tr} TR)
