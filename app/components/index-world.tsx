@@ -13,6 +13,7 @@ import { FactionBar } from "./faction-bar";
 import type { MetagameWorld } from "~/utils/metagame";
 import type { PopulationWorld } from "~/utils/population";
 import { c } from "~/utils/classes";
+import { ReactFragment, useEffect, useState } from "react";
 
 export type IndexWorldProps = {
   metagame: MetagameWorld;
@@ -67,64 +68,10 @@ export const IndexWorld = ({ metagame, population }: IndexWorldProps) => {
             return a.alert && !b.alert ? -1 : b.alert && !a.alert ? 1 : 0;
           })
           .map((zone) => {
-            let {
-              name,
-              colors: [upper, lower],
-            } = zones[zone.id];
             return worldId !== 19 ? (
-              <div
-                key={zone.id}
-                className={c(styles.continent, zone.alert && styles.alertCont)}
-              >
-                <div className={styles.contName}>
-                  <div
-                    className={styles.contCircle}
-                    style={
-                      {
-                        "--upper-color": upper,
-                        "--lower-color": lower,
-                      } as any
-                    }
-                  ></div>
-                  <div>{name}</div>
-                </div>
-                <div className={styles.contBars}>
-                  <div>
-                    <div className={styles.contBarTitle}>TERRITORY CONTROL</div>
-                    <FactionBar population={zone.territory} />
-                  </div>
-                  {zone.alert && (
-                    <div>
-                      <div className={styles.contBarTitle}>
-                        {snakeCaseToTitleCase(
-                          zone.alert.alert_type
-                        ).toUpperCase()}{" "}
-                        ALERT PROGRESS | STARTED{" "}
-                        {humanTimeAgo(
-                          Date.now() -
-                            new Date(zone.alert.start_time).getTime(),
-                          true
-                        ).toUpperCase()}{" "}
-                        AGO
-                      </div>
-                      <FactionBar population={zone.alert.percentages} />
-                    </div>
-                  )}
-                </div>
-              </div>
+              <Continent key={zone.id} zone={zone} />
             ) : (
-              <div key={zone.id} className={styles.contName}>
-                <div
-                  className={styles.contCircle}
-                  style={
-                    {
-                      "--upper-color": upper,
-                      "--lower-color": lower,
-                    } as any
-                  }
-                ></div>
-                <div>{name}</div>
-              </div>
+              <JaegerContinent key={zone.id} zone={zone} />
             );
           })}
         {worldId !== 19 && (
@@ -147,4 +94,115 @@ export const IndexWorld = ({ metagame, population }: IndexWorldProps) => {
       </div>
     </div>
   );
+};
+
+const JaegerContinent = ({ zone }: { zone: MetagameWorld["zones"][0] }) => {
+  const {
+    name,
+    colors: [upper, lower],
+  } = zones[zone.id];
+  return (
+    <div key={zone.id} className={styles.contName}>
+      <div
+        className={styles.contCircle}
+        style={
+          {
+            "--upper-color": upper,
+            "--lower-color": lower,
+          } as any
+        }
+      ></div>
+      <div>{name}</div>
+    </div>
+  );
+};
+
+const endTime = (alert: Required<MetagameWorld["zones"][0]>["alert"]) => {
+  const alertDurationMins = alert.alert_type !== "sudden_death" ? 90 : 15;
+  return new Date(alert.start_time).getTime() + alertDurationMins * 60 * 1000;
+};
+
+const Continent = ({ zone }: { zone: MetagameWorld["zones"][0] }) => {
+  const {
+    name,
+    colors: [upper, lower],
+  } = zones[zone.id];
+
+  return (
+    <div key={zone.id} className={c(styles.continent)}>
+      <div className={styles.contName}>
+        <div
+          className={styles.contCircle}
+          style={
+            {
+              "--upper-color": upper,
+              "--lower-color": lower,
+            } as any
+          }
+        ></div>
+        <div>{name}</div>
+      </div>
+      <div className={styles.contBars}>
+        <div>
+          <div className={styles.contBarTitle}>TERRITORY CONTROL</div>
+          <FactionBar population={zone.territory} />
+        </div>
+        {zone.alert && (
+          <>
+            <div className={styles.barSeparator}></div>
+            <div>
+              <div className={styles.contBarTitle}>
+                <div>
+                  {snakeCaseToTitleCase(zone.alert.alert_type).toUpperCase()}{" "}
+                  ALERT PROGRESS
+                </div>{" "}
+                <div>
+                  <TimeLeft alert={zone.alert} />{" "}
+                </div>
+              </div>
+              <FactionBar population={zone.alert.percentages} />
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const timeLeftString = (alert: MetagameWorld["zones"][0]["alert"]) => {
+  if (alert) {
+    const time = endTime(alert) - Date.now();
+    if (time < 2000) {
+      return <>JUST ENDED</>;
+    }
+
+    const speed = time < 1000 * 60 * 15 ? "1s" : "4s";
+
+    return (
+      <>
+        {humanTimeAgo(time, true).toUpperCase()} LEFT{" "}
+        <div
+          className={styles.alertDot}
+          style={{ "--speed": speed } as any}
+        ></div>
+      </>
+    );
+  } else {
+    return <></>;
+  }
+};
+
+const TimeLeft = ({ alert }: { alert: MetagameWorld["zones"][0]["alert"] }) => {
+  const [timeLeft, setTimeLeft] = useState(timeLeftString(alert));
+
+  useEffect(() => {
+    if (alert) {
+      const interval = setInterval(() => {
+        setTimeLeft(timeLeftString(alert));
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [alert]);
+
+  return <>{timeLeft}</>;
 };

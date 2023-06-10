@@ -99,7 +99,15 @@ export const contBars = style({
 export const contBarTitle = style({
   fontWeight: "bold",
   fontSize: "0.7rem",
-  padding: "0.2rem 0.5rem",
+  padding: "0.15rem",
+  lineHeight: 0.8,
+  display: "flex",
+  justifyContent: "space-between",
+});
+
+export const barSeparator = style({
+  height: "0.5rem",
+  width: "100%",
 });
 
 export const contCircle = style({
@@ -143,6 +151,24 @@ const alertFade = keyframes({
 export const alertCont = style({
   border: "2px solid #ff2d2d",
   animation: `${alertFade} 1s ease-in-out 4 alternate`,
+});
+
+const alertDotBlink = keyframes({
+  from: {
+    backgroundColor: "#ff2d2d",
+  },
+  to: {
+    backgroundColor: "#662929",
+  },
+});
+
+export const alertDot = style({
+  display: "inline-block",
+  height: "0.5rem",
+  width: "0.5rem",
+  borderRadius: "50%",
+  background: "#ff2d2d",
+  animation: `${alertDotBlink} var(--speed) ease-in-out infinite alternate`,
 });
 
 export const nextCont = style({
