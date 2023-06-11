@@ -13,7 +13,7 @@ import { FactionBar } from "./faction-bar";
 import type { MetagameWorld } from "~/utils/metagame";
 import type { PopulationWorld } from "~/utils/population";
 import { c } from "~/utils/classes";
-import { ReactFragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export type IndexWorldProps = {
   metagame: MetagameWorld;

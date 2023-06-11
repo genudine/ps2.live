@@ -1,6 +1,7 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
+import { Footer } from "~/components/footer";
 import type { MetagameWorld } from "~/utils/metagame";
 import { fetchSingleMetagameWorld } from "~/utils/metagame";
 import type { WorldResponse, Zone } from "~/utils/saerro";
@@ -70,7 +71,7 @@ export default function World() {
   const worldInfo = worlds[String(id || "default")];
 
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.6" }}>
+    <div>
       <h1>{worldInfo.name}</h1>
       <h2>Total Population</h2>
       <p>
@@ -83,6 +84,7 @@ export default function World() {
           <ZoneInfo zone={zone} key={zone.id} />
         ))}
       </div>
+      <Footer isMainPage />
     </div>
   );
 }

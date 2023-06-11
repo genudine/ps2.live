@@ -12,8 +12,16 @@ import * as styles from "./root.css";
 import "./reset.css";
 
 export const links: LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: true },
-  { rel: "preconnect", href: "ttps://fonts.googleapis.com", crossorigin: true },
+  {
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossOrigin: "anonymous",
+  },
+  {
+    rel: "preconnect",
+    href: "ttps://fonts.googleapis.com",
+    crossOrigin: "anonymous",
+  },
   {
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Unbounded:wght@700&display=swap",
