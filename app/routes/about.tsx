@@ -33,11 +33,11 @@ export default function About() {
               Voidwell &amp; Lampjaw
             </a>
             ,{" "}
-            <a className={link} href="https://census.lithafalcon.cc">
+            <a className={link} href="https://census.lithafalcon.cc/">
               Sanctuary &amp; Falcon
             </a>
             ,{" "}
-            <a className={link} href="https://ps2alerts.co">
+            <a className={link} href="https://ps2alerts.com/">
               PS2Alerts team
             </a>
             ,{" "}
