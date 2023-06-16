@@ -132,6 +132,6 @@ export const zones: Record<string, { name: string; colors: [string, string] }> =
     },
     default: {
       name: "Unknown",
-      colors: ["#000000", "#000000"],
+      colors: ["#111111", "#cccccc"],
     },
   };
