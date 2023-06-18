@@ -14,6 +14,7 @@ import type { MetagameWorld } from "~/utils/metagame";
 import type { PopulationWorld } from "~/utils/population";
 import { c } from "~/utils/classes";
 import { useEffect, useState } from "react";
+import { AlertTimer } from "./alert-timer";
 
 export type IndexWorldProps = {
   metagame: MetagameWorld;
@@ -131,11 +132,6 @@ const JaegerContinent = ({ zone }: { zone: MetagameWorld["zones"][0] }) => {
   );
 };
 
-const endTime = (alert: Required<MetagameWorld["zones"][0]>["alert"]) => {
-  const alertDurationMins = alert.alert_type !== "sudden_death" ? 90 : 15;
-  return new Date(alert.start_time).getTime() + alertDurationMins * 60 * 1000;
-};
-
 const Continent = ({ zone }: { zone: MetagameWorld["zones"][0] }) => {
   const {
     name,
@@ -171,7 +167,7 @@ const Continent = ({ zone }: { zone: MetagameWorld["zones"][0] }) => {
                   ALERT PROGRESS
                 </div>{" "}
                 <div>
-                  <TimeLeft alert={zone.alert} />{" "}
+                  <AlertTimer alert={zone.alert} />{" "}
                 </div>
               </div>
               <FactionBar population={zone.alert.percentages} />
@@ -181,42 +177,4 @@ const Continent = ({ zone }: { zone: MetagameWorld["zones"][0] }) => {
       </div>
     </div>
   );
-};
-
-const timeLeftString = (alert: MetagameWorld["zones"][0]["alert"]) => {
-  if (alert) {
-    const time = endTime(alert) - Date.now();
-    if (time < 2000) {
-      return <>JUST ENDED</>;
-    }
-
-    const speed = time < 1000 * 60 * 15 ? "1s" : "4s";
-
-    return (
-      <>
-        {humanTimeAgo(time, true).toUpperCase()} LEFT{" "}
-        <div
-          className={styles.alertDot}
-          style={{ "--speed": speed } as any}
-        ></div>
-      </>
-    );
-  } else {
-    return <></>;
-  }
-};
-
-const TimeLeft = ({ alert }: { alert: MetagameWorld["zones"][0]["alert"] }) => {
-  const [timeLeft, setTimeLeft] = useState(timeLeftString(alert));
-
-  useEffect(() => {
-    if (alert) {
-      const interval = setInterval(() => {
-        setTimeLeft(timeLeftString(alert));
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [alert]);
-
-  return <>{timeLeft}</>;
 };

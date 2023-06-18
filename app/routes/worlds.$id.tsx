@@ -17,6 +17,16 @@ import {
   worlds,
   zones,
 } from "~/utils/strings";
+import * as styles from "~/components/world.css";
+import { c } from "~/utils/classes";
+import { FactionBar } from "~/components/faction-bar";
+import { popImage } from "~/components/index-world.css";
+import vsLogo from "~/images/vs-100.png";
+import ncLogo from "~/images/nc-100.png";
+import trLogo from "~/images/tr-100.png";
+import { FactionPie } from "~/components/faction-pie";
+import { AlertTimer } from "~/components/alert-timer";
+import { contPrioritySort } from "~/utils/sorting";
 
 type LoaderData = {
   saerro: WorldResponse;
@@ -66,26 +76,104 @@ export default function World() {
   const {
     saerro: { world },
     id,
+    metagame,
   } = useLoaderData<typeof loader>();
 
   const worldInfo = worlds[String(id || "default")];
+  const nextZoneID = metagame.zones.sort(
+    (a, b) =>
+      new Date(a.locked_since ?? Date.now()).getTime() -
+      new Date(b.locked_since ?? Date.now()).getTime()
+  )[0].id;
 
   return (
-    <div>
-      <h1>{worldInfo.name}</h1>
-      <h2>Total Population</h2>
-      <p>
-        {totalPopulation(world.population)} players ({world.population.vs} VS,{" "}
-        {world.population.nc} NC, {world.population.tr} TR)
-      </p>
-      <div>
-        <h2>Continents</h2>
-        {world.zones.all.map((zone) => (
-          <ZoneInfo zone={zone} key={zone.id} />
-        ))}
+    <>
+      <div className={styles.outer}>
+        <div>
+          <div className={styles.header}>
+            <div className={c(styles.headerName, styles.headerFont)}>
+              <div>{worldInfo.name.toUpperCase()}</div>
+              <div className={styles.headerSub}>
+                [{worldInfo.location}] [{worldInfo.platform}]
+              </div>
+            </div>
+            <div className={styles.populationHead}>
+              <div className={styles.headerFont}>
+                <div className={styles.totalPop}>
+                  {totalPopulation(world.population).toLocaleString()}
+                </div>
+                PLAYERS
+              </div>
+              <div className={styles.population}>
+                <div className={styles.popNumbers}>
+                  <div
+                    className={styles.popItem}
+                    style={{ flex: world.population.vs + 1 }}
+                  >
+                    <img className={popImage} src={vsLogo} alt="VS" />{" "}
+                    {world.population.vs}
+                  </div>
+                  <div
+                    className={styles.popItem}
+                    style={{ flex: world.population.nc + 1 }}
+                  >
+                    <img className={popImage} src={ncLogo} alt="NC" />{" "}
+                    {world.population.nc}
+                  </div>
+                  <div
+                    className={styles.popItem}
+                    style={{ flex: world.population.tr + 1 }}
+                  >
+                    <img className={popImage} src={trLogo} alt="TR" />{" "}
+                    {world.population.tr}
+                  </div>
+                </div>
+                <FactionBar population={world.population} />
+              </div>
+            </div>
+            <div className={styles.headerConts}>
+              <div className={styles.headerSub}>CONTINENT CONTROL</div>
+              {metagame.zones.sort(contPrioritySort).map((zone, idx) => {
+                const zoneInfo = zones[String(zone.id)];
+                return (
+                  <div key={idx} className={styles.cont}>
+                    <div style={{ flex: 0 }}>{zoneInfo.name.toUpperCase()}</div>
+                    <div style={{ flex: 1 }}>
+                      <FactionPie
+                        size="4rem"
+                        population={zone.alert?.percentages ?? zone.territory}
+                        innerBackground={`linear-gradient(45deg, ${zoneInfo.colors[0]}, ${zoneInfo.colors[1]})`}
+                        innerMargin={10}
+                      />
+                    </div>
+                    <div className={styles.contSub}>
+                      {zone.alert ? (
+                        <AlertTimer alert={zone.alert} />
+                      ) : zone.locked ? (
+                        nextZoneID == zone.id ? (
+                          <>NEXT UP »</>
+                        ) : (
+                          <>LOCKED</>
+                        )
+                      ) : (
+                        <>UNLOCKED</>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div>
+            <h2>Continents</h2>
+            {world.zones.all.map((zone) => (
+              <ZoneInfo zone={zone} key={zone.id} />
+            ))}
+          </div>
+        </div>
       </div>
       <Footer isMainPage />
-    </div>
+    </>
   );
 }
 
