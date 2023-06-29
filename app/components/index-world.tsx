@@ -29,8 +29,7 @@ export const IndexWorld = ({ metagame, population }: IndexWorldProps) => {
       new Date(a.locked_since ?? Date.now()).getTime() -
       new Date(b.locked_since ?? Date.now()).getTime()
   )[0];
-  const nextZoneStrings =
-    worldId !== 2000 ? zones[nextZone.id] : zones["default"];
+  const nextZoneStrings = zones[nextZone.id];
 
   return (
     <div className={styles.container}>
@@ -89,20 +88,7 @@ export const IndexWorld = ({ metagame, population }: IndexWorldProps) => {
                   } as any
                 }
               ></div>
-              <div>
-                {worldId !== 2000 ? (
-                  nextZoneStrings.name
-                ) : (
-                  <>
-                    <span
-                      style={{ textDecoration: "dotted" }}
-                      title="Census doesn't report alert timings for this server yet."
-                    >
-                      ???
-                    </span>
-                  </>
-                )}
-              </div>
+              <div>{nextZoneStrings.name}</div>
             </div>
           </div>
         )}
