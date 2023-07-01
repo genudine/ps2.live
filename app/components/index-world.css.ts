@@ -188,3 +188,25 @@ export const nextContText = style({
   textTransform: "uppercase",
   marginRight: "0.5rem",
 });
+
+export const oopsies = style({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: "1.5rem",
+  height: "10rem",
+});
+
+const oopsiesSpinAnim = keyframes({
+  from: {
+    transform: "rotate(0deg)",
+  },
+  to: {
+    transform: "rotate(360deg)",
+  },
+});
+
+export const oopsiesSpin = style({
+  animation: `${oopsiesSpinAnim} 2s linear infinite`,
+});

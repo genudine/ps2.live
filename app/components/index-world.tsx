@@ -24,6 +24,11 @@ export type IndexWorldProps = {
 export const IndexWorld = ({ metagame, population }: IndexWorldProps) => {
   const worldId = metagame.id;
   const { platform, location, name } = worlds[String(worldId || "default")];
+
+  if (metagame.zones.length === 0) {
+    return <BrokenWorld worldId={worldId} />;
+  }
+
   const nextZone = metagame.zones.sort(
     (a, b) =>
       new Date(a.locked_since ?? Date.now()).getTime() -
@@ -160,6 +165,29 @@ const Continent = ({ zone }: { zone: MetagameWorld["zones"][0] }) => {
             </div>
           </>
         )}
+      </div>
+    </div>
+  );
+};
+
+const BrokenWorld = ({ worldId }: { worldId: number }) => {
+  const { platform, location, name } = worlds[String(worldId || "default")];
+
+  return (
+    <div className={styles.container}>
+      <Link to={`/worlds/${worldId}`} className={styles.header}>
+        <div className={styles.headerName}>{name}</div>
+        <div className={styles.headerMarkers}>
+          [{location}] [{platform}]{" "}
+        </div>
+        <div className={styles.headerDetailsLink}>DETAILS ⇨</div>
+      </Link>
+      <div className={styles.details}>
+        <div className={styles.oopsies}>
+          Daybreak made an oopsie.
+          <br />
+          <div className={styles.oopsiesSpin}>🙂</div>
+        </div>
       </div>
     </div>
   );
