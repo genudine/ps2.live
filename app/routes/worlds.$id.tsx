@@ -80,11 +80,14 @@ export default function World() {
   } = useLoaderData<typeof loader>();
 
   const worldInfo = worlds[String(id || "default")];
-  const nextZoneID = metagame.zones.sort(
-    (a, b) =>
-      new Date(a.locked_since ?? Date.now()).getTime() -
-      new Date(b.locked_since ?? Date.now()).getTime()
-  )[0].id;
+  const nextZoneID =
+    metagame.zones.length !== 0
+      ? metagame.zones.sort(
+          (a, b) =>
+            new Date(a.locked_since ?? Date.now()).getTime() -
+            new Date(b.locked_since ?? Date.now()).getTime()
+        )[0].id
+      : 0;
 
   return (
     <>
