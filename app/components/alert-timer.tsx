@@ -1,10 +1,24 @@
 import { useEffect, useState } from "react";
-import { MetagameWorld } from "~/utils/metagame";
+import type { MetagameWorld } from "~/utils/metagame";
 import { humanTimeAgo } from "~/utils/strings";
 import * as styles from "./alert-timer.css";
 
 const endTime = (alert: Required<MetagameWorld["zones"][0]>["alert"]) => {
-  const alertDurationMins = alert.alert_type !== "sudden_death" ? 90 : 15;
+  let alertDurationMins = 90;
+
+  switch (alert.alert_type) {
+    case "air":
+      alertDurationMins = 30;
+      break;
+
+    case "sudden_death":
+      alertDurationMins = 15;
+      break;
+
+    default:
+      break;
+  }
+
   return new Date(alert.start_time).getTime() + alertDurationMins * 60 * 1000;
 };
 
