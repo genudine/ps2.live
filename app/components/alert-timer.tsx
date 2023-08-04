@@ -12,6 +12,7 @@ const endTime = (alert: Required<MetagameWorld["zones"][0]>["alert"]) => {
       break;
 
     case "sudden_death":
+    case "max":
       alertDurationMins = 15;
       break;
 
